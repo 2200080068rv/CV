@@ -112,8 +112,8 @@ def rank_multiple_cvs(cv_texts, job_description):
     return ranked_cvs
 
 # Streamlit UI
-st.set_page_config(page_title="cv ranking")
-st.title("cv ranking: ATS TrackCVing System")
+st.set_page_config(page_title="CV Ranking")
+st.title("CV Ranking: ATS TrackCVing System")
 
 # Custom CSS for styling
 st.markdown("""
@@ -164,7 +164,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 job_description = st.text_area("Job Description:", key="input", height=200)
-uploaded_files = st.file_uploader("Upload your resume(s) (PDF)...", type=["pdf"], accept_multiple_files=True)
+uploaded_files = st.file_uploader("Upload your resume(s) / CV (PDF)...", type=["pdf"], accept_multiple_files=True)
 
 resume_texts = []
 if uploaded_files:
