@@ -113,7 +113,7 @@ def rank_multiple_cvs(cv_texts, job_description):
 
 # Streamlit UI
 st.set_page_config(page_title="CV Ranking")
-st.title("CV Ranking: ATS TrackCVing System")
+st.title("CV Ranking: ATS Tracking System")
 
 # Custom CSS for styling
 st.markdown("""
