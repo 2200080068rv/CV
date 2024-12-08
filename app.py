@@ -243,7 +243,7 @@ if submit1 or submit2 or submit3 or submit4:
                         st.write(response)
                     
                 elif submit2:
-                   # st.subheader("Improvement Suggestions")
+                    st.subheader("Improvement Suggestions")
                     formatted_prompt = input_prompt2.format(text=resume_texts[0], jd=job_description)
                     response = get_gemini_response(formatted_prompt)
                     if response:
