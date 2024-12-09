@@ -111,9 +111,40 @@ def rank_multiple_cvs(cv_texts, job_description):
     ranked_cvs = sorted(cv_scores, key=lambda x: x[1], reverse=True)
     return ranked_cvs
 
+# Function to generate job availability using Gemini API
+def get_job_availability(job_description):
+    try:
+        # Modify prompt to query Gemini for job listings
+        input_prompt = f"""
+        You are a recruitment assistant. Based on the provided job description, generate a list of job openings and internship opportunities that align with the job description. Provide the following details for each job:
+        1. Job title
+        2. Company name
+        3. Location
+        4. Brief job description
+        5. Required skills
+        6. Application link (URL)
+        7. Company website link (URL)
+
+        Job Description: {job_description}
+
+        Provide the results in a structured format with each job as a list item.
+        """
+
+        # Query the Gemini API with the prompt
+        response = get_gemini_response(input_prompt)
+        if response:
+            # Parse the response to extract job information
+            # Assuming response is a structured text format
+            return response  # The job listing data returned by Gemini API
+        else:
+            return "No job data found."
+    except Exception as e:
+        st.error(f"Error fetching job availability: {str(e)}")
+        return None
+
 # Streamlit UI
 st.set_page_config(page_title="CV Ranking")
-st.title("CV Ranking: ATS Tracking System")
+st.title("CV Ranking and Job Availability")
 
 # Custom CSS for styling
 st.markdown("""
@@ -183,7 +214,7 @@ with col2:
 with col3:
     submit3 = st.button("Match Percentage")
 with col4:
-    submit4 = st.button("Rank CVs")
+    submit4 = st.button("Job Availability")
 
 input_prompt1 = """
 You are an experienced Technical Human Resource Manager. Review the provided resume against the job description. 
@@ -226,14 +257,13 @@ Job Description: {jd}
 
 Present the analysis in a clear format with sections and bullet points. For the match percentage, provide a specific number between 0-100.
 """
-
 if submit1 or submit2 or submit3 or submit4:
     if not job_description:
         st.error("Please enter a job description.")
     elif not resume_texts:
         st.error("Please upload at least one resume in PDF format.")
     else:
-        with st.spinner():
+        with st.spinner(""):  # Custom loader text
             try:
                 if submit1:
                     st.subheader("Resume Analysis")
@@ -248,30 +278,21 @@ if submit1 or submit2 or submit3 or submit4:
                     response = get_gemini_response(formatted_prompt)
                     if response:
                         st.write(response)
-                    
+
                 elif submit3:
-                    st.subheader("Match Percentage and Keywords")
+                    st.subheader("Job Matching Percentage")
                     formatted_prompt = input_prompt3.format(text=resume_texts[0], jd=job_description)
                     response = get_gemini_response(formatted_prompt)
                     if response:
                         st.write(response)
                     
                 elif submit4:
-                    st.subheader("CV Rankings")
-                    
-                    # First, show section-wise ranking for the first CV
-                    st.write("### Section-wise Ranking (First CV)")
-                    section_rankings = rank_cv_sections(resume_texts[0], job_description)
-                    for section, score in section_rankings:
-                        st.write(f"{section.title()}: {score:.2f}")
-                    
-                    # Then, show overall ranking of all CVs
-                    if len(resume_texts) > 1:
-                        st.write("### Overall CV Rankings")
-                        cv_rankings = rank_multiple_cvs(resume_texts, job_description)
-                        for i, (cv_index, score) in enumerate(cv_rankings, 1):
-                            st.write(f"Rank {i}: CV {cv_index + 1} (Score: {score:.2f})")
-            
+                    st.subheader("Job Availability")
+                    st.write("Fetching jobs and internships related to the job description...")
+                    job_listings = get_job_availability(job_description)
+                    if job_listings:
+                        st.write(job_listings)
+                    else:
+                        st.write("No job opportunities found for the given job description.")
             except Exception as e:
-                st.error(f"An error occurred: {str(e)}")
-                st.error("Please try again. If the error persists, check your API key configuration.")
+                st.error(f"Error: {str(e)}")
