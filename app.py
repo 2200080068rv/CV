@@ -11,7 +11,7 @@ import numpy as np
 import re
 
 # Configure Gemini API with direct key
-GEMINI_API_KEY = "AIzaSyBJVDujHlXUS2YLgsE7AogSVnTmts8eQS0"
+GEMINI_API_KEY = "AIzaSyB68dMQUptckDUapwzH-J8LC6oUb3H7wQo"
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Initialize SBERT model
